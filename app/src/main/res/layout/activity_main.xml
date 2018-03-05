@@ -25,6 +25,7 @@
         android:layout_marginStart="216dp"
         android:layout_marginTop="16dp"
         android:text="X"
+        android:onClick="deleteElement_0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

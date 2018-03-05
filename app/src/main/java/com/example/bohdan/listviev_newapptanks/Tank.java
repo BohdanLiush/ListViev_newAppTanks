@@ -1,27 +1,36 @@
 package com.example.bohdan.listviev_newapptanks;
 
+import java.io.Serializable;
 import java.util.Random;
 
 /**  Created by bohdan on 23.02.2018.  */
 
-public class Tank implements Runnable {
+public class Tank implements Runnable, Serializable {
 
-    String name;
-    public int speed;
-    public int armor;
-    public int endurance;
-    public int chanceMiss;
-    public int precision;
+    public String name;
+    public String image;
+    public int armor = 100;
+    public int speed = 80;
+    public int endurance = 100;
+    public int precision = 80;
+    public int  shotPower = 50;
 
     public MiddleTank tank0, tank1;
 
-    public int shotPower;
     int count = 0;
 
-    public Tank() {
-    }
+    /*public Tank(String name){
+        this.name = name;
+        armor = 100;
+        speed = 80;
+        endurance = 100;
+        precision = 80;
+        shotPower = 50;
+    }*/
+   /* public Tank() {
+    }*/
 
-    public Tank(int speed, int armor, int endurance, int chanceMiss, int precision) {
+    /*public Tank(int speed, int armor, int endurance, int chanceMiss, int precision) {
         this.speed = speed;
         this.armor = armor;
         this.endurance = endurance;
@@ -40,7 +49,7 @@ public class Tank implements Runnable {
         this.speed = speed;
         this.armor = armor;
         this.endurance = endurance;
-    }
+    }*/
 
     public void fireTank(Tank tank1) {
         //this.tank0 = (MiddleTank) tank0;
@@ -83,7 +92,7 @@ public class Tank implements Runnable {
         this.endurance = this.endurance - shot;
         //return this.tank1.endurance;
         if (this.endurance < 0) {
-            endurance = 0;
+            this.endurance = 0;
             System.out.println(this.name + "...death");
             //isDead = true;
         }
