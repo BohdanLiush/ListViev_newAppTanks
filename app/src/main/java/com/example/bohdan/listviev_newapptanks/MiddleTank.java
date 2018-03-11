@@ -7,9 +7,9 @@ import java.io.Serializable;
 public class MiddleTank extends Tank implements Serializable {
 
     public String name;
-   /* public String image;
+    //public String image;
     public int armor = 100;
-    public int speed = 80;*/
+    public int speed = 80;
     //public int endurance;
    /* public int precision = 80;
     public int  shotPower = 50;*/

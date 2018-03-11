@@ -1,6 +1,7 @@
 package com.example.bohdan.listviev_newapptanks;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -22,22 +23,17 @@ public class MainActivity extends AppCompatActivity {
     final ArrayList<MiddleTank> tanksRd = new ArrayList<>(15);
     final ArrayList<MiddleTank> baseTn = new ArrayList<>();
 
+    BaseAdapter baseAdapter;
+
+    Thread t,p;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         final ListView listView = findViewById(R.id.liste23);
 
-        /*final int[] images = {R.drawable.tanaks, R.drawable.alex, R.drawable.sisty, R.drawable.won,
-                R.drawable.sisty,R.drawable.tanaks, R.drawable.alex, R.drawable.sisty, R.drawable.won, R.drawable.sisty,
-                R.drawable.tanaks, R.drawable.alex, R.drawable.sisty, R.drawable.won, R.drawable.sisty,
-                R.drawable.tanaks, R.drawable.alex, R.drawable.sisty, R.drawable.won,
-                R.drawable.sisty,R.drawable.tanaks, R.drawable.alex, R.drawable.sisty, R.drawable.won, R.drawable.sisty,
-                R.drawable.tanaks, R.drawable.alex, R.drawable.sisty, R.drawable.won, R.drawable.sisty
-        };*/
-
-        final BaseAdapter baseAdapter = new BaseAdapter() {
+        baseAdapter = new BaseAdapter() {
 
             @Override
             public int getCount() {
@@ -56,31 +52,33 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public View getView(int i, View view, ViewGroup viewGroup) {
-                View customView = getLayoutInflater().inflate(R.layout.custom, viewGroup, false);
-                ImageView imageView = customView.findViewById(R.id.imageView);
-                TextView comandName = customView.findViewById(R.id.textView);
-                TextView numericTank = customView.findViewById(R.id.textView3);
-                TextView tankLife = customView.findViewById(R.id.textView2);
+
+                view = getLayoutInflater().inflate(R.layout.custom, viewGroup, false);
+                ImageView imageView = view.findViewById(R.id.imageView);
+                TextView comandName = view.findViewById(R.id.textView);
+                TextView numericTank = view.findViewById(R.id.textView3);
+                TextView tankLife = view.findViewById(R.id.textView2);
+                Resources resources = getResources();
 
                 for (int k = 0; k < baseTn.size(); k++) {
-                    //imageView.setImageResource(images[i]);
                     comandName.setText(baseTn.get(i).name);
                     tankLife.setText("tankLife: " + (baseTn.get(i).endurance));
+                    imageView.setImageResource(resources.getIdentifier(baseTn.get(i).image,"drawable","com.example.bohdan.listviev_newapptanks"));
                     numericTank.setText("numericTank");
                 }
-                return customView;
+                return view;
             }
         };
 
-        for (int i = 0; i < 15; i++) {
-            tanksGr.add(new MiddleTank("Jack" + i));
-            tanksRd.add(new MiddleTank("Bruce" + i));
+        for (int p = 0; p < 15; p++) {
+            tanksGr.add(new MiddleTank("Jack" + p, "alex"));
+            tanksRd.add(new MiddleTank("Bruce" + p,"sisty"));
         }
 
         baseTn.addAll(tanksGr);
         baseTn.addAll(tanksRd);
-        listView.setAdapter(baseAdapter);
 
+        listView.setAdapter(baseAdapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -88,12 +86,12 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, TwoActivity.class);
                 intent.putExtra("item", baseTn.get(i));
                 startActivity(intent);
-                baseAdapter.notifyDataSetChanged();
-                listView.invalidateViews();
-                listView.refreshDrawableState();
             }
         });
 
+        baseAdapter.notifyDataSetChanged(); // метод обновлення listview
+        listView.invalidateViews();
+        listView.refreshDrawableState();
     }
 
     public void starter(View view) throws InterruptedException {
@@ -104,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
                     expression_3.setText("The winner is: " + tanksRed[i].name);
             }*/
 
-        Thread t = new Thread(new Runnable() {
+        t = new Thread(new Runnable() {
             public void run() {
                 for (int i = 0; i < 15; i++) {
                     //while (tanksGr.get(i).endurance > 0 && tanksRd.get(i).endurance > 0) {
@@ -123,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
         });
         t.start();
 
-        Thread p = new Thread(new Runnable() {
+        p = new Thread(new Runnable() {
             public void run() {
                 for (int i = 0; i < 15; i++) {
                     // while (tanksGr.get(i).endurance > 0 && tanksRd.get(i).endurance > 0) {
@@ -135,53 +133,33 @@ public class MainActivity extends AppCompatActivity {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-
                     System.out.println("------------------------ * ---------------------------");
                     if (tanksRd.get(i).endurance > 0)
                         System.out.println("The winner is: " + tanksRd.get(i).name);
                 }
             }
         });
-
         p.start();
         t.join();
         p.join();
-
+        baseAdapter.notifyDataSetChanged();
     }
 
-    public void deleteElement_0(View view) throws IOException {
+    public void deleteElement_0(View view)  {
 
         ArrayList<MiddleTank> templist = new ArrayList<MiddleTank>();
-        for (int i = 0; i < baseTn.size(); i++) {
+        for (int i = 0; i < baseTn.size(); i++) { // this work
             if (baseTn.get(i).endurance == 0)
                 templist.add(baseTn.get(i));
         }
         baseTn.removeAll(templist);
+        baseAdapter.notifyDataSetChanged();
 
-                /*for (MiddleTank tank : baseTn){
-                    if (tank.endurance==0)
-                        baseTn.remove(tank);
-                }*/
-
-              /* for (int i = 0; i < baseTn.size(); i++){
-                   if (baseTn.get(i).endurance==0)
-                       baseTn.remove(i);
-               }*/
-            /*int len = baseTn.size() - 1; // Precalculate it once, so that the cycle runs faster
-            for (int i = len; i > 1; i--)
-            {
-
-                baseTn.remove(i);
-
-            }*/
-        /*ArrayList<MiddleTank> templist = new ArrayList<MiddleTank>();
-        for (int i = 0; i < baseTn.size(); i++) {
-            if (baseTn.get(i).endurance == 0)
-                templist.add(baseTn.get(i));
-        }
-        baseTn.removeAll(templist);*/
-
-
+        /* for (MiddleTank tank : baseTn) {
+            if (tank.endurance == 0) {
+                baseTn.remove(tank);
+            }
+        }*/
     }
 }
 
